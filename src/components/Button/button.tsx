@@ -3,13 +3,16 @@ import classNames from 'classnames'
 
 export enum ButtonSize {
   Large = 'lg',
-  Small = 'sm'
+  Small = 'sm',
+  Mini = 'xs'
 }
 
 export enum ButtonType {
-  Primary = 'primary',
   Default = 'default',
+  Primary = 'primary',
+  Success = 'success',
   Danger = 'danger',
+  Warning = 'warning',
   Link = 'link'
 }
 
@@ -21,17 +24,25 @@ interface BaseButtonProps {
   children: React.ReactNode,
   href?: string
 }
+// 沿用button元素的原生属性和a元素的原生属性
+// 使用 typescript 的 & 声明一个联合类型
+type NativeButtonProps = BaseButtonProps & React.ButtonHTMLAttributes<HTMLElement>
+type AnchorButtonProps = BaseButtonProps & React.AnchorHTMLAttributes<HTMLElement>
+// 使用typescript 的 Partial<T>来把属性设置为可选
+export type ButtonProps = Partial<NativeButtonProps & AnchorButtonProps>
 
-const Button: React.FC<BaseButtonProps> = props => {
+const Button: React.FC<ButtonProps> = props => {
   const {
     btnType,
+    className,
     disabled,
     size,
     children,
-    href
+    href,
+    ...resProps
   } = props
-  // btn btn-lg btn-primary
-  const classes = classNames('btn', {
+
+  const classes = classNames('btn', className, {
     [`btn-${btnType}`]: btnType,
     [`btn-${size}`]: size,
     'disabled': (btnType === ButtonType.Link) && disabled
@@ -41,7 +52,9 @@ const Button: React.FC<BaseButtonProps> = props => {
     return (
       <a
         className={classes}
-        href={href}>
+        href={href}
+        {...resProps}
+      >
         {children}
       </a>
     )
@@ -49,8 +62,10 @@ const Button: React.FC<BaseButtonProps> = props => {
     return (
       <button
         className={classes}
-        disabled={disabled}>{
-        children}
+        disabled={disabled}
+        {...resProps}
+      >
+        {children}
       </button>
     )
   }
