@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React from 'react';
 import ButtonExample from './examples/Button' 
 import MenuExample from './examples/Menu'
 
